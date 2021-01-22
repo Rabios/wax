@@ -3,7 +3,7 @@
 
 # wax
 
-**wax** is a tiny language designed to transpile to other languages easily. Currently supported backends: **C**, **C++**, **Java**, **TypeScript**, **Python**, **C#**, **Swift**, **Lua**, as well as directly to **WebAssembly**.
+**wax** is a tiny language designed to transpile to other languages easily. Currently supported backends: **C**, **C++**, **Java**, **TypeScript**, **Python**, **C#**, **Swift**, **Lua**, as well to other languages, and also transpiles directly to **WebAssembly**.
 
 ### [Playground](https://waxc.netlify.app/) | [Quickstart](./QUICKSTART.md) | [Examples](./examples) | [IDE](https://github.com/LingDong-/wax4vscode)
 
@@ -117,20 +117,25 @@ built Oct 27 2020
 USAGE: waxc [options] code.wax                   
 
 OPTIONS:                                         
---c     path/out.c     transpile to c            
---java  path/out.java  transpile to java         
---ts    path/out.ts    transpile to typescript   
---py    path/out.py    transpile to python       
---cs    path/out.cs    transpile to c#           
---cpp   path/out.cpp   transpile to c++          
---swift path/out.swift transpile to swift  
---lua   path/out.lua   transpile to lua 
---wat   path/out.wat   transpile to webassembly         
---json  path/out.json  syntax tree to JSON file  
---tokens               print tokenization        
---ast                  print abstract syntax tree
---silent               don't print info          
---help                 print this message 
+--c        path/out.c       transpile to c
+--java     path/out.java    transpile to java
+--kt       path/out.kt      transpile to kotlin
+--ts       path/out.ts      transpile to typescript
+--js       path/out.js      transpile to javascript
+--coffee   path/out.coffee  transpile to coffeescript
+--py       path/out.py      transpile to python
+--cs       path/out.cs      transpile to c#
+--cpp      path/out.cpp     transpile to c++
+--swift    path/out.swift   transpile to swift
+--lua      path/out.lua     transpile to lua
+--moon     path/out.moon    transpile to moonscript
+--rb       path/out.rb      transpile to ruby
+--wat      path/out.wat     transpile to webassembly
+--json     path/out.json    syntax tree to JSON file
+--tokens                    print tokenization
+--ast                       print abstract syntax tree
+--silent                    don't print info
+--help                      print this message
 ```
 
 ### Example
