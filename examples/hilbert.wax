@@ -74,7 +74,7 @@
     (for j 0 (< j m) 1 (do
       (<< s (get canv (+ (* i m) j)))
     ))
-    (<< s '\n')
+    (<< s "\n")
   ))
   (return s)
 )

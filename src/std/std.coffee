@@ -1,0 +1,1 @@
+w_slice = (x, i, n) -> x.slice(x, i+n);

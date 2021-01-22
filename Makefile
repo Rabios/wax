@@ -4,16 +4,18 @@ _:
 
 
 co: _
-	gcc src/waxc.c -o waxc -O3 -std=c99 -pedantic -Wall
+	gcc src/waxc.c -o waxc -O3 -std=c99 -pedantic -Wall -Woverlength-strings
 
 c: _
-	gcc src/waxc.c -DEBUG -o waxc
+	gcc src/waxc.c -DEBUG -o waxc -Woverlength-strings
 
 em: _
-	../emsdk/upstream/emscripten/emcc src/waxc.c -s WASM=0 -lnodefs.js -s NODERAWFS=1 -O3 -o waxc_cli.js --memory-init-file 0
+	#../emsdk/upstream/emscripten/emcc src/waxc.c -s WASM=0 -lnodefs.js -s NODERAWFS=1 -O3 -o waxc_cli.js --memory-init-file 0
+	emcc src/waxc.c -s WASM=0 -lnodefs.js -s NODERAWFS=1 -O3 -o waxc_cli.js --memory-init-file 0
 
 emlib: _
-	../emsdk/upstream/emscripten/emcc \
+	#../emsdk/upstream/emscripten/emcc \
+	emcc \
 	src/waxc_lib.c -s WASM=0 -O3 -o site/waxc.js --memory-init-file 0 \
 	-s EXPORTED_FUNCTIONS='["_transpile"]' \
 	-s EXPORTED_RUNTIME_METHODS='["cwrap"]' \

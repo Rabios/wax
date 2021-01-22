@@ -1,11 +1,11 @@
-#ifndef WAX_TO_LUA
-#define WAX_TO_LUA
+#ifndef WAX_TO_MOON
+#define WAX_TO_MOON
 
 #include "text.c"
 #include "parser.c"
 #include "common.c"
 
-str_t zero_to_lua(type_t* typ){
+str_t zero_to_moon(type_t* typ){
   str_t out = str_new();
   if (typ->tag == TYP_INT){
     str_add(&out,"0");
@@ -25,22 +25,21 @@ str_t zero_to_lua(type_t* typ){
   return out;
 }
 
-str_t expr_to_lua(expr_t* expr, int indent){
+str_t expr_to_moon(expr_t* expr, int indent){
   // print_syntax_tree(expr,4);
   // printf("-----\n");
   str_t out = str_new();
   INDENT2(indent);
 
   if (expr->key == EXPR_LET){
-    str_add(&out,"local ");
     str_add(&out, ((tok_t*)(CHILD1->term))->val.data);
     str_add(&out,"=");
-    str_add(&out,zero_to_lua( (type_t*)(CHILD2->term) ).data);
+    str_add(&out,zero_to_moon( (type_t*)(CHILD2->term) ).data);
     
   }else if (expr->key == EXPR_SET){
-    str_add(&out, expr_to_lua(CHILD1,-1).data);
+    str_add(&out, expr_to_moon(CHILD1,-1).data);
     str_add(&out,"=");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
 
   }else if (expr->key == EXPR_TERM){
     tok_t* tok = ((tok_t*)(expr->term));
@@ -60,65 +59,65 @@ str_t expr_to_lua(expr_t* expr, int indent){
             expr->key == EXPR_IMOD || expr->key == EXPR_FMOD
     ){
     str_add(&out, "((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, ")");
     str_add(&out, expr->rawkey.data);
     str_add(&out, "(");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
     str_add(&out, "))");
 
   }else if (expr->key == EXPR_BOR){
-    str_add(&out, "bit.bor((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, "(bit or bit32).bor((");
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, "),(");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
     str_add(&out, "))");
 
   }else if (expr->key == EXPR_BAND){
-    str_add(&out, "bit.band((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, "(bit or bit32).band((");
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, "),(");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
     str_add(&out, "))");
 
   }else if (expr->key == EXPR_SHL){
-    str_add(&out, "bit.lshift((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, "(bit or bit32).lshift((");
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, "),(");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
     str_add(&out, "))");
 
   }else if (expr->key == EXPR_SHR){
-    str_add(&out, "bit.rshift((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, "(bit or bit32).rshift((");
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, "),(");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
     str_add(&out, "))");
 
   }else if (expr->key == EXPR_BNEG){
-    str_add(&out, "bit.bnot(");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, "(bit or bit32).bnot(");
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, ")");
 
   }else if (expr->key == EXPR_XOR){
-    str_add(&out, "bit.bxor((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, "(bit or bit32).bxor((");
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, "),(");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
     str_add(&out, "))");
 
   }else if (expr->key == EXPR_LAND){
     str_add(&out, "(((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, ")~=0 and (");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
     str_add(&out, ")~=0) and 1 or 0)");
 
   }else if (expr->key == EXPR_LOR) {
     str_add(&out, "(((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, ")~=0 or (");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
     str_add(&out, ")~=0) and 1 or 0)");
 
   }else if (expr->key == EXPR_IGEQ || expr->key == EXPR_FGEQ ||
@@ -127,120 +126,118 @@ str_t expr_to_lua(expr_t* expr, int indent){
             expr->key == EXPR_ILT  || expr->key == EXPR_FLT  
   ){
     str_add(&out, "(((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, ")");
     str_add(&out, expr->rawkey.data);
     str_add(&out, "(");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
     str_add(&out, ")) and 1 or 0)");
 
 
   }else if (expr->key == EXPR_IDIV){
     str_add(&out, "w_trunc((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, ")/(");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
     str_add(&out, "))");
 
   }else if (expr->key == EXPR_IEQ || expr->key == EXPR_FEQ || expr->key == EXPR_STREQL || expr->key == EXPR_PTREQL){
 
     str_add(&out, "(((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, ")==(");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
     str_add(&out, ")) and 1 or 0)");
 
   }else if (expr->key == EXPR_INEQ || expr->key == EXPR_FNEQ || expr->key == EXPR_STRNEQ || expr->key == EXPR_PTRNEQ){
 
     str_add(&out, "(((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, ")~=(");
-    str_add(&out, expr_to_lua(CHILD2,-1).data );
+    str_add(&out, expr_to_moon(CHILD2,-1).data );
     str_add(&out, ")) and 1 or 0)");
 
 
   }else if (expr->key == EXPR_LNOT){
     str_add(&out, "(((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data );
+    str_add(&out, expr_to_moon(CHILD1,-1).data );
     str_add(&out, ")==0) and 1 or 0)");
 
   }else if (expr->key == EXPR_IF){
     str_add(&out, "if (");
-    str_add(&out, expr_to_lua(CHILD1,-1).data);
-    str_add(&out, ")~=0 then\n");
-    str_add(&out, expr_to_lua(CHILD2,indent).data);
+    str_add(&out, expr_to_moon(CHILD1,-1).data);
+    str_add(&out, ")~=0 \n");
+    str_add(&out, expr_to_moon(CHILD2,indent).data);
     if (CHILD3){
-      INDENT2(indent);
+	  INDENT2(indent);
       str_add(&out, "else\n");
-      str_add(&out, expr_to_lua(CHILD3,indent).data);
+      str_add(&out, expr_to_moon(CHILD3,indent).data);
     }
     INDENT2(indent);
-    str_add(&out, "end");
+    str_add(&out, "\n");
   }else if (expr->key == EXPR_TIF){
-    str_add(&out, "((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data);
-    str_add(&out, ")~=0 and (");
-    str_add(&out, expr_to_lua(CHILD2,-1).data);
+    str_add(&out, "(");
+    str_add(&out, expr_to_moon(CHILD1,-1).data);
+    str_add(&out, ")~=0 and ");
+	str_add(&out, "(");
+    str_add(&out, expr_to_moon(CHILD2,-1).data);
     str_add(&out, ") or (");
-    str_add(&out, expr_to_lua(CHILD3,-1).data);
-    str_add(&out, "))");
+    str_add(&out, expr_to_moon(CHILD3,-1).data);
+    str_add(&out, ")");
 
   }else if (expr->key == EXPR_WHILE){
     str_add(&out, "while (");
-    str_add(&out, expr_to_lua(CHILD1,-1).data);
+    str_add(&out, expr_to_moon(CHILD1,-1).data);
     str_add(&out, ")~=0 do\n");
-    str_add(&out, expr_to_lua(CHILD2,indent).data);
+    str_add(&out, expr_to_moon(CHILD2,indent).data);
     INDENT2(indent);
-    str_add(&out, "end");
+    //str_add(&out, "end");
 
   }else if (expr->key == EXPR_FOR){
     str_add(&out, "do\n");
     INDENT2(indent+1);
-    str_add(&out, "local ");
-    str_add(&out, expr_to_lua(CHILD1,-1).data);
+    //str_add(&out, "local ");
+    str_add(&out, expr_to_moon(CHILD1,-1).data);
     str_add(&out, " = (");
-    str_add(&out, expr_to_lua(CHILD2,-1).data);
+    str_add(&out, expr_to_moon(CHILD2,-1).data);
     str_add(&out, ")\n");
     INDENT2(indent+1);
     str_add(&out, "while (");
-    str_add(&out, expr_to_lua(CHILD3,-1).data);
-    str_add(&out, ")~=0 do\n");
-    str_add(&out, expr_to_lua(CHILDN,indent+1).data);
+    str_add(&out, expr_to_moon(CHILD3,-1).data);
+    str_add(&out, ")~=0\n");
+    str_add(&out, expr_to_moon(CHILDN,indent+1).data);
     INDENT2(indent+2);
-    str_add(&out, expr_to_lua(CHILD1,-1).data);
+    str_add(&out, expr_to_moon(CHILD1,-1).data);
     str_add(&out, " = ");
-    str_add(&out, expr_to_lua(CHILD1,-1).data);
+    str_add(&out, expr_to_moon(CHILD1,-1).data);
     str_add(&out, " + ");
-    str_add(&out, expr_to_lua(CHILD4,-1).data);
+    str_add(&out, expr_to_moon(CHILD4,-1).data);
     str_add(&out, "\n");
     INDENT2(indent+1);
-    str_add(&out, "end\n");
     INDENT2(indent);
-    str_add(&out, "end");
 
   }else if (expr->key == EXPR_FORIN){
 
     str_add(&out, "for ");
-    str_add(&out, expr_to_lua(CHILD1,-1).data);
+    str_add(&out, expr_to_moon(CHILD1,-1).data);
     str_add(&out, ",");
-    str_add(&out, expr_to_lua(CHILD2,-1).data);
-    str_add(&out, " in pairs(");
-    str_add(&out, expr_to_lua(CHILD3,-1).data);
-    str_add(&out, ") do \n");
+    str_add(&out, expr_to_moon(CHILD2,-1).data);
+    str_add(&out, " in *(");
+    str_add(&out, expr_to_moon(CHILD3,-1).data);
+    str_add(&out, ")\n");
 
-    str_add(&out, expr_to_lua(CHILDN,indent+1).data);
+    str_add(&out, expr_to_moon(CHILDN,indent+1).data);
 
-    INDENT2(indent);
-    str_add(&out, "end");
+    //INDENT2(indent);
+    //str_add(&out, "end");
 
   }else if (expr->key == EXPR_FUNC){
-    str_add(&out, "function ");
     list_node_t* it = expr->children.head;
 
     str_t funcname = ((tok_t*)(CHILD1->term))->val;
 
     str_add(&out, funcname.data);
-    str_add(&out, "(");
+    str_add(&out, "= (");
     it = expr->children.head->next;
     while(it){
       expr_t* ex = (expr_t*)(it->data);
@@ -255,14 +252,14 @@ str_t expr_to_lua(expr_t* expr, int indent){
 
       it = it->next;
     }
-    str_add(&out, ")");
+    str_add(&out, ") ->");
 
 
     str_add(&out, "\n");
-    str_add(&out, expr_to_lua(CHILDN,indent).data);
+    str_add(&out, expr_to_moon(CHILDN,indent).data);
     
     INDENT2(indent);
-    str_add(&out, "end\n");
+    str_add(&out, "\n");
 
   }else if (expr->key == EXPR_CALL){
     str_t funcname = ((tok_t*)(CHILD1->term))->val;
@@ -279,7 +276,7 @@ str_t expr_to_lua(expr_t* expr, int indent){
         str_add(&out,",");
       }
 
-      str_add(&out, expr_to_lua(((expr_t*)(it->data)),-1).data );
+      str_add(&out, expr_to_moon(((expr_t*)(it->data)),-1).data );
 
       it = it->next;
     }
@@ -294,9 +291,9 @@ str_t expr_to_lua(expr_t* expr, int indent){
     while(it){
       expr_t* ex = (expr_t*)(it->data);
       if (it==(expr->children.head)){
-        str_add(&out,(char*)&expr_to_lua(ex,indent+1).data[indent*2]);
+        str_add(&out,(char*)&expr_to_moon(ex,indent+1).data[indent*2]);
       }else{
-        str_add(&out,expr_to_lua(ex,indent+1).data);
+        str_add(&out,expr_to_moon(ex,indent+1).data);
       }
       it = it->next;
     }
@@ -307,45 +304,45 @@ str_t expr_to_lua(expr_t* expr, int indent){
     type_t* typl = CHILD1->type;
     type_t* typr = (type_t*)(CHILD2->term);
     if (typl->tag == TYP_INT && typr->tag == TYP_FLT){
-      str_add(&out, expr_to_lua(CHILD1,-1).data);
+      str_add(&out, expr_to_moon(CHILD1,-1).data);
     }else if (typl->tag == TYP_FLT && typr->tag == TYP_INT){
       str_add(&out, "w_trunc(");
-      str_add(&out, expr_to_lua(CHILD1,-1).data);
+      str_add(&out, expr_to_moon(CHILD1,-1).data);
       str_add(&out, ")");
     }else if (typl->tag == TYP_INT && typr->tag == TYP_STR){
       str_add(&out, "(\"\"..(");
-      str_add(&out, expr_to_lua(CHILD1,-1).data);
+      str_add(&out, expr_to_moon(CHILD1,-1).data);
       str_add(&out, "))");
     }else if (typl->tag == TYP_FLT && typr->tag == TYP_STR){
       str_add(&out, "(\"\"..(");
-      str_add(&out, expr_to_lua(CHILD1,-1).data);
+      str_add(&out, expr_to_moon(CHILD1,-1).data);
       str_add(&out, "))");
     }else if (typl->tag == TYP_STR && typr->tag == TYP_INT){
       str_add(&out, "w_trunc((");
-      str_add(&out, expr_to_lua(CHILD1,-1).data);
+      str_add(&out, expr_to_moon(CHILD1,-1).data);
       str_add(&out, ")+0)");
     }else if (typl->tag == TYP_STR && typr->tag == TYP_FLT){
       str_add(&out, "((");
-      str_add(&out, expr_to_lua(CHILD1,-1).data);
+      str_add(&out, expr_to_moon(CHILD1,-1).data);
       str_add(&out, ")+0)");
     }else{
       str_add(&out, "(");
-      str_add(&out, expr_to_lua(CHILD1,-1).data);
+      str_add(&out, expr_to_moon(CHILD1,-1).data);
       str_add(&out, ")");
     }
   }else if (expr->key == EXPR_RETURN){
     str_add(&out,"return");
     if (CHILD1){
       str_add(&out," ");
-      str_add(&out,expr_to_lua(CHILD1,-1).data);
+      str_add(&out,expr_to_moon(CHILD1,-1).data);
     }
   }else if (expr->key == EXPR_STRUCT){
-    str_add(&out,"function struct__");
+    str_add(&out,"struct__");
     str_add(&out, ((tok_t*)(CHILD1->term))->val.data);
-    str_add(&out,"()\n");
+    str_add(&out,"() = ->\n");
 
     INDENT2(indent+1);
-    str_add(&out,"local this_ = {}\n");
+    str_add(&out,"this_ = {}\n");
     list_node_t* it = expr->children.head->next;
 
     while(it){
@@ -354,7 +351,7 @@ str_t expr_to_lua(expr_t* expr, int indent){
       str_add(&out,"this_.");
       str_add(&out, ((tok_t*)(((expr_t*)(((expr_t*)(it->data))->children.head->data))->term))->val.data);
       str_add(&out,"=");
-      str_add(&out,zero_to_lua(  (type_t*)(((expr_t*)(((expr_t*)(it->data))->children.head->next->data))->term) ).data);
+      str_add(&out,zero_to_moon(  (type_t*)(((expr_t*)(((expr_t*)(it->data))->children.head->next->data))->term) ).data);
       str_add(&out,"\n");
       it = it->next;
     }
@@ -365,30 +362,30 @@ str_t expr_to_lua(expr_t* expr, int indent){
 
   }else if (expr->key == EXPR_NOTNULL){
     str_add(&out,"((");
-    str_add(&out, expr_to_lua(CHILD1,-1).data);
+    str_add(&out, expr_to_moon(CHILD1,-1).data);
     str_add(&out,"~=nil) and 1 or 0)");
 
   }else if (expr->key == EXPR_SETNULL){
     if (!CHILD2){
-      str_add(&out, expr_to_lua(CHILD1,-1).data);
+      str_add(&out, expr_to_moon(CHILD1,-1).data);
       str_add(&out,"=nil");
     }else{
       if (CHILD1->type->tag == TYP_STT){
-        str_add(&out,expr_to_lua(CHILD1,-1).data);
+        str_add(&out,expr_to_moon(CHILD1,-1).data);
         str_add(&out,".");
-        str_add(&out,expr_to_lua(CHILD2,-1).data);
+        str_add(&out,expr_to_moon(CHILD2,-1).data);
         str_add(&out,"=nil");
       }else if (CHILD1->type->tag == TYP_ARR){
         str_add(&out,"(");
-        str_add(&out,expr_to_lua(CHILD1,-1).data);
+        str_add(&out,expr_to_moon(CHILD1,-1).data);
         str_add(&out,")[(");
-        str_add(&out,expr_to_lua(CHILD2,-1).data);
+        str_add(&out,expr_to_moon(CHILD2,-1).data);
         str_add(&out,")+1]=nil");
       }else if (CHILD1->type->tag == TYP_VEC){
         str_add(&out,"(");
-        str_add(&out,expr_to_lua(CHILD1,-1).data);
+        str_add(&out,expr_to_moon(CHILD1,-1).data);
         str_add(&out,")[(");
-        str_add(&out,expr_to_lua(CHILD2,-1).data);
+        str_add(&out,expr_to_moon(CHILD2,-1).data);
         str_add(&out,")+1]=nil");
       }
     }
@@ -412,7 +409,7 @@ str_t expr_to_lua(expr_t* expr, int indent){
             str_add(&out,",");
           }
           str_add(&out,"(");
-          str_add(&out,expr_to_lua((expr_t*)(it->data),-1).data);
+          str_add(&out,expr_to_moon((expr_t*)(it->data),-1).data);
           str_add(&out,")");
           it = it->next;
         }
@@ -425,7 +422,7 @@ str_t expr_to_lua(expr_t* expr, int indent){
         char s[32];
         sprintf(s,"%d",typ->size);
         str_add(&out,"w_vec_init(");
-        str_add(&out,zero_to_lua(typ->elem0).data);
+        str_add(&out,zero_to_moon(typ->elem0).data);
         str_add(&out,",");
         str_add(&out,s);
         str_add(&out,")");
@@ -438,7 +435,7 @@ str_t expr_to_lua(expr_t* expr, int indent){
             str_add(&out,",");
           }
           str_add(&out,"(");
-          str_add(&out,expr_to_lua((expr_t*)(it->data),-1).data);
+          str_add(&out,expr_to_moon((expr_t*)(it->data),-1).data);
           str_add(&out,")");
           it = it->next;
         }
@@ -448,157 +445,157 @@ str_t expr_to_lua(expr_t* expr, int indent){
         str_add(&out,"({})");
     }else if (typ->tag == TYP_STR){
       if (CHILD2){
-        str_add(&out,expr_to_lua(CHILD2,-1).data);
+        str_add(&out,expr_to_moon(CHILD2,-1).data);
       }else{
         str_add(&out,"\"\"");
       }
     }
   }else if (expr->key == EXPR_FREE){
-    str_add(&out, expr_to_lua(CHILD1,-1).data);
+    str_add(&out, expr_to_moon(CHILD1,-1).data);
     str_add(&out,"=nil--(GC)");
 
   }else if (expr->key == EXPR_STRUCTGET){
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,".");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
 
   }else if (expr->key == EXPR_STRUCTSET){
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,".");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,"=");
-    str_add(&out,expr_to_lua(CHILD3,-1).data);
+    str_add(&out,expr_to_moon(CHILD3,-1).data);
 
   }else if (expr->key == EXPR_VECGET){
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,"[(");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,")+1]");
   }else if (expr->key == EXPR_VECSET){
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,"[(");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,")+1]=");
-    str_add(&out,expr_to_lua(CHILD3,-1).data);
+    str_add(&out,expr_to_moon(CHILD3,-1).data);
 
   }else if (expr->key == EXPR_ARRGET){
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,"[(");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,")+1]");
 
   }else if (expr->key == EXPR_ARRSET){
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,"[(");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,")+1]=");
-    str_add(&out,expr_to_lua(CHILD3,-1).data);
+    str_add(&out,expr_to_moon(CHILD3,-1).data);
 
   }else if (expr->key == EXPR_ARRINS){
 
     str_add(&out,"table.insert((");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,"),(");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,")+1,(");
-    str_add(&out,expr_to_lua(CHILD3,-1).data);
+    str_add(&out,expr_to_moon(CHILD3,-1).data);
     str_add(&out,"))");
 
   }else if (expr->key == EXPR_ARRREM){
 
     str_add(&out,"w_arr_remove((");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,"),(");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,"),(");
-    str_add(&out,expr_to_lua(CHILD3,-1).data);
+    str_add(&out,expr_to_moon(CHILD3,-1).data);
     str_add(&out,"))");
 
   }else if (expr->key == EXPR_ARRCPY){
     str_add(&out,"w_arr_slice(");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,",");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,",");
-    str_add(&out,expr_to_lua(CHILD3,-1).data);
+    str_add(&out,expr_to_moon(CHILD3,-1).data);
     str_add(&out,")");
 
   }else if (expr->key == EXPR_ARRLEN){
     str_add(&out,"(#(");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,"))");
 
   }else if (expr->key == EXPR_MAPLEN){
     str_add(&out,"w_map_len(");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,")");
 
   }else if (expr->key == EXPR_MAPGET){
     str_add(&out,"((");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,")[");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,"] or ");
-    str_add(&out,zero_to_lua(CHILD1->type->elem1).data);
+    str_add(&out,zero_to_moon(CHILD1->type->elem1).data);
     str_add(&out,")");
 
   }else if (expr->key == EXPR_MAPREM){
     str_add(&out,"((");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,")[");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,"]=nil)");
 
   }else if (expr->key == EXPR_MAPSET){
     str_add(&out,"(");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,")[");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,"]=");
-    str_add(&out,expr_to_lua(CHILD3,-1).data);
+    str_add(&out,expr_to_moon(CHILD3,-1).data);
 
   }else if (expr->key == EXPR_STRLEN){
     str_add(&out,"(#(");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,"))");
 
   }else if (expr->key == EXPR_STRGET){
     str_add(&out,"string.byte(");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,",(");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,")+1)");
 
   }else if (expr->key == EXPR_STRADD){
 
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,"=");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,"..string.char(");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,")");
 
   }else if (expr->key == EXPR_STRCAT){
 
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,"=");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,"..(");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,")");
 
   }else if (expr->key == EXPR_STRCPY){
     str_add(&out,"w_strcpy(");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,",");
-    str_add(&out,expr_to_lua(CHILD2,-1).data);
+    str_add(&out,expr_to_moon(CHILD2,-1).data);
     str_add(&out,",");
-    str_add(&out,expr_to_lua(CHILD3,-1).data);
+    str_add(&out,expr_to_moon(CHILD3,-1).data);
     str_add(&out,")");
 
   }else if (expr->key == EXPR_PRINT){
     str_add(&out,"print(");
-    str_add(&out,expr_to_lua(CHILD1,-1).data);
+    str_add(&out,expr_to_moon(CHILD1,-1).data);
     str_add(&out,")");
 
   }else if (expr->key == EXPR_EXTERN){
@@ -623,7 +620,7 @@ str_t expr_to_lua(expr_t* expr, int indent){
   return out;
 }
 
-str_t tree_to_lua(str_t modname, expr_t* tree, map_t* functable, map_t* stttable, map_t* included){
+str_t tree_to_moon(str_t modname, expr_t* tree, map_t* functable, map_t* stttable, map_t* included){
   // lift_scope(tree);
 
   str_t out = str_new();
@@ -637,21 +634,18 @@ str_t tree_to_lua(str_t modname, expr_t* tree, map_t* functable, map_t* stttable
   str_add(&out,__DATE__);
   str_add(&out,")\n\n");
 
-  // if (included_lookup("math",included)){
-  //   str_add(&out,"do for k,v in pairs(math) do _G[k]=v end end\n");
-  // }
-
   str_add(&out,"------ WAX Standard Library BEGIN ------\n");
-  str_addconst(&out,TEXT_std_lua);
+  str_addconst(&out,TEXT_std_moon);
   str_add(&out,"------ WAX Standard Library END   ------\n\n");
+
+
   str_add(&out,"------ User Code            BEGIN ------\n\n");
-  str_add(&out,"local bit = require('bit32') or require('bit')\n\n");
   list_node_t* it = tree->children.head;
 
   while(it){
     expr_t* expr = (expr_t*)(it->data);
 
-    str_add(&out,expr_to_lua(expr,0).data);
+    str_add(&out,expr_to_moon(expr,0).data);
 
 
     it = it->next;

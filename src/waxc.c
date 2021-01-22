@@ -8,48 +8,63 @@ int WVERBOSE = 1;
 #include "tac.c"
 #include "to_c.c"
 #include "to_java.c"
+#include "to_kotlin.c"
 #include "to_ts.c"
+#include "to_js.c"
+#include "to_coffee.c"
 #include "to_json.c"
 #include "to_py.c"
 #include "to_cs.c"
 #include "to_cpp.c"
 #include "to_swift.c"
 #include "to_lua.c"
+#include "to_moon.c"
+#include "to_ruby.c"
 #include "to_wat.c"
 
-#define TARG_C     1
-#define TARG_JAVA  2
-#define TARG_TS    4
-#define TARG_JSON  8
-#define TARG_PY    16
-#define TARG_CS    32
-#define TARG_CPP   64
-#define TARG_SWIFT 128
-#define TARG_LUA   256
-#define TARG_WAT   512
+#define TARG_C      1
+#define TARG_JAVA   2
+#define TARG_TS     3
+#define TARG_JSON   4
+#define TARG_PY     5
+#define TARG_CS     6
+#define TARG_CPP    7
+#define TARG_SWIFT  8
+#define TARG_LUA    9
+#define TARG_WAT    10
+#define TARG_JS	    11
+#define TARG_COFFEE 12
+#define TARG_KOTLIN	13
+#define TARG_MOON   14
+#define TARG_RUBY   15
 
 void print_help(){
-  printf(" _____                                           \n");
-  printf("|||'  |                                          \n");
-  printf("|''   |                                          \n");
-  printf("|_WAX_| Compiler                                 \n\n");
-  printf("built " __DATE__ "                               \n\n");
-  printf("USAGE: waxc [options] code.wax                   \n\n");
-  printf("OPTIONS:                                         \n");
-  printf("--c     path/out.c     transpile to c            \n");
-  printf("--java  path/out.java  transpile to java         \n");
-  printf("--ts    path/out.ts    transpile to typescript   \n");
-  printf("--py    path/out.py    transpile to python       \n");
-  printf("--cs    path/out.cs    transpile to c#           \n");
-  printf("--cpp   path/out.cpp   transpile to c++          \n");
-  printf("--swift path/out.swift transpile to swift        \n");
-  printf("--lua   path/out.lua   transpile to lua          \n");
-  printf("--wat   path/out.wat   transpile to webassembly  \n");
-  printf("--json  path/out.json  syntax tree to JSON file  \n");
-  printf("--tokens               print tokenization        \n");
-  printf("--ast                  print abstract syntax tree\n");
-  printf("--silent               don't print info          \n");
-  printf("--help                 print this message        \n");
+  printf(" _____                                                \n");
+  printf("|||'  |                                               \n");
+  printf("|''   |                                               \n");
+  printf("|_WAX_| Compiler                                      \n\n");
+  printf("built " __DATE__ "                                    \n\n");
+  printf("USAGE: waxc [options] code.wax                        \n\n");
+  printf("OPTIONS:                                              \n");
+  printf("--c        path/out.c       transpile to c            \n");
+  printf("--java     path/out.java    transpile to java         \n");
+  printf("--kt       path/out.kt      transpile to kotlin       \n");
+  printf("--ts       path/out.ts      transpile to typescript   \n");
+  printf("--js       path/out.js      transpile to javascript   \n");
+  printf("--coffee   path/out.coffee  transpile to coffeescript \n");
+  printf("--py       path/out.py      transpile to python       \n");
+  printf("--cs       path/out.cs      transpile to c#           \n");
+  printf("--cpp      path/out.cpp     transpile to c++          \n");
+  printf("--swift    path/out.swift   transpile to swift        \n");
+  printf("--lua      path/out.lua     transpile to lua          \n");
+  printf("--moon     path/out.moon    transpile to moonscript   \n");
+  printf("--rb       path/out.rb      transpile to ruby         \n");
+  printf("--wat      path/out.wat     transpile to webassembly  \n");
+  printf("--json     path/out.json    syntax tree to JSON file  \n");
+  printf("--tokens                    print tokenization        \n");
+  printf("--ast                       print abstract syntax tree\n");
+  printf("--silent                    don't print info          \n");
+  printf("--help                      print this message        \n");
 }
 
 
@@ -81,6 +96,16 @@ void transpile(int targ, char* input_file, char* path, int print_tok, int print_
     defs_addbool(&defs,"TARGET_LUA",0);
   }else if (targ == TARG_WAT){
     defs_addbool(&defs,"TARGET_WAT",0);
+  }else if (targ == TARG_JS){
+    defs_addbool(&defs,"TARGET_JS",0);
+  }else if (targ == TARG_KOTLIN){
+    defs_addbool(&defs,"TARGET_KOTLIN",0);
+  }else if (targ == TARG_COFFEE){
+    defs_addbool(&defs,"TARGET_COFFEE",0);
+  }else if (targ == TARG_MOON){
+    defs_addbool(&defs,"TARGET_MOON",0);
+  }else if (targ == TARG_RUBY){
+    defs_addbool(&defs,"TARGET_RUBY",0);
   }
 
   printinfo("[info] running preprocessor...\n");
@@ -106,6 +131,7 @@ void transpile(int targ, char* input_file, char* path, int print_tok, int print_
   printinfo("[info] generating target code: %s\n",path);
   str_t modname = base_name(path);
   str_t out;
+  
   if (targ == TARG_C){
     out = tree_to_c(modname,tree,&functable,&stttable);
   }else if (targ == TARG_JAVA){
@@ -126,7 +152,18 @@ void transpile(int targ, char* input_file, char* path, int print_tok, int print_
     out = tree_to_lua(modname,tree,&functable,&stttable,&included);
   }else if (targ == TARG_WAT){
     out = tree_to_wat(modname,tree,&functable,&stttable,&included);
+  }else if (targ == TARG_JS){
+    out = tree_to_js(modname,tree,&functable,&stttable,&included);
+  }else if (targ == TARG_KOTLIN){
+    out = tree_to_kotlin(modname,tree,&functable,&stttable,&included);
+  }else if (targ == TARG_COFFEE){
+    out = tree_to_coffee(modname,tree,&functable,&stttable,&included);
+  }else if (targ == TARG_MOON){
+    out = tree_to_moon(modname,tree,&functable,&stttable,&included);
+  }else if (targ == TARG_RUBY){
+    out = tree_to_ruby(modname,tree,&functable,&stttable,&included);
   }
+  
   write_file_ascii(path, out.data);
   freex();
 }
@@ -135,6 +172,9 @@ void transpile(int targ, char* input_file, char* path, int print_tok, int print_
 int main(int argc, char** argv){
   char* path_c = 0;
   char* path_java = 0;
+  char* path_kotlin = 0;
+  char* path_coffee = 0;
+  char* path_js = 0;
   char* path_ts = 0;
   char* path_json = 0;
   char* path_py = 0;
@@ -142,6 +182,8 @@ int main(int argc, char** argv){
   char* path_cpp = 0;
   char* path_swift = 0;
   char* path_lua = 0;
+  char* path_moon = 0;
+  char* path_ruby = 0;
   char* path_wat = 0;
   char* input_file = 0;
 
@@ -158,6 +200,15 @@ int main(int argc, char** argv){
       i+=2;
     }else if (!strcmp(argv[i],"--ts")){
       path_ts = argv[i+1];
+      i+=2;
+	}else if (!strcmp(argv[i],"--js")){
+      path_js = argv[i+1];
+      i+=2;
+	}else if (!strcmp(argv[i],"--kt")){
+      path_kotlin = argv[i+1];
+      i+=2;
+	}else if (!strcmp(argv[i],"--coffee")){
+      path_coffee = argv[i+1];
       i+=2;
     }else if (!strcmp(argv[i],"--json")){
       path_json = argv[i+1];
@@ -176,6 +227,12 @@ int main(int argc, char** argv){
       i+=2;
     }else if (!strcmp(argv[i],"--lua")){
       path_lua = argv[i+1];
+      i+=2;
+	}else if (!strcmp(argv[i],"--moon")){
+      path_moon = argv[i+1];
+      i+=2;
+	}else if (!strcmp(argv[i],"--rb")){
+      path_ruby = argv[i+1];
       i+=2;
     }else if (!strcmp(argv[i],"--wat")){
       path_wat = argv[i+1];
@@ -218,10 +275,25 @@ int main(int argc, char** argv){
     printinfo("[info] transpiling '%s' to Java...\n",input_file);
     transpile(TARG_JAVA, input_file, path_java, print_tok, print_ast);
   }
+  
+  if (path_kotlin){
+    printinfo("[info] transpiling '%s' to Kotlin...\n",input_file);
+    transpile(TARG_KOTLIN, input_file, path_kotlin, print_tok, print_ast);
+  }
 
   if (path_ts){
     printinfo("[info] transpiling '%s' to TypeScript...\n",input_file);
     transpile(TARG_TS, input_file, path_ts, print_tok, print_ast);
+  }
+  
+  if (path_js){
+    printinfo("[info] transpiling '%s' to JavaScript...\n",input_file);
+    transpile(TARG_JS, input_file, path_js, print_tok, print_ast);
+  }
+  
+  if (path_coffee){
+    printinfo("[info] transpiling '%s' to CoffeeScript...\n",input_file);
+    transpile(TARG_COFFEE, input_file, path_coffee, print_tok, print_ast);
   }
 
   if (path_json){
@@ -252,6 +324,16 @@ int main(int argc, char** argv){
   if (path_lua){
     printinfo("[info] transpiling '%s' to Lua...\n",input_file);
     transpile(TARG_LUA, input_file, path_lua, print_tok, print_ast);
+  }
+  
+  if (path_moon){
+    printinfo("[info] transpiling '%s' to MoonScript...\n",input_file);
+    transpile(TARG_MOON, input_file, path_moon, print_tok, print_ast);
+  }
+  
+  if (path_ruby){
+    printinfo("[info] transpiling '%s' to Ruby...\n",input_file);
+    transpile(TARG_RUBY, input_file, path_ruby, print_tok, print_ast);
   }
 
   if (path_wat){

@@ -29,9 +29,11 @@
 	(asm "#define random() ((float)rand()/RAND_MAX)\n")
 )
 
+
 (@if TARGET_CPP 1
 	(asm "#define random() ((float)rand()/RAND_MAX)\n")
 )
+
 
 (@if TARGET_JAVA 1
 	(asm "public static float fabs(float x){return Math.abs(x);}\n")
@@ -39,6 +41,15 @@
 	(asm "public static float fmax(float x, float y){return Math.max(x,y);}\n")
 	(asm "public static final float INFINITY = Float.POSITIVE_INFINITY;\n")
 )
+
+
+(@if TARGET_KOTLIN 1
+	(asm "public fun fabs(x: Float): Float {return Math.abs(x);}\n")
+	(asm "public fun fmin(x: Float, y: Float): Float {return Math.min(x,y);}\n")
+	(asm "public fun fmax(x: Float, y: Float): Float {return Math.max(x,y);}\n")
+	(asm "val INFINITY: Float = Float.POSITIVE_INFINITY;\n")
+)
+
 
 (@if TARGET_TS 1
 	(asm "const acos  = Math.acos  ;\n")
@@ -68,6 +79,67 @@
 	(asm "// @ts-ignore\n")
 	(asm "const tanh  = Math.tanh ;\n")
 )
+
+
+(@if TARGET_JS 1
+	(asm "const acos  = Math.acos  ;\n")
+	(asm "const asin  = Math.asin  ;\n")
+	(asm "const atan  = Math.atan  ;\n")
+	(asm "const cos   = Math.cos   ;\n")
+	(asm "const sin   = Math.sin   ;\n")
+	(asm "const tan   = Math.tan   ;\n")
+	(asm "const exp   = Math.exp   ;\n")
+	(asm "const log   = Math.log   ;\n")
+	(asm "const sqrt  = Math.sqrt  ;\n")
+	(asm "const ceil  = Math.ceil  ;\n")
+	(asm "const floor = Math.floor ;\n")
+	(asm "const fabs  = Math.abs   ;\n")
+	(asm "const fmin  = Math.min   ;\n")
+	(asm "const fmax  = Math.max   ;\n")
+	(asm "const atan2 = Math.atan2 ;\n")
+	(asm "const pow   = Math.pow   ;\n")
+	(asm "const abs   = Math.abs   ;\n")
+	(asm "const round = Math.round ;\n")
+	(asm "const random= Math.random;\n")
+	(asm "const INFINITY = Infinity;\n")
+	(asm "// @ts-ignore\n")
+	(asm "const sinh  = Math.sinh ;\n")
+	(asm "// @ts-ignore\n")
+	(asm "const cosh  = Math.cosh ;\n")
+	(asm "// @ts-ignore\n")
+	(asm "const tanh  = Math.tanh ;\n")
+)
+
+
+(@if TARGET_COFFEE 1
+	(asm "acos  = Math.acos  ;\n")
+	(asm "asin  = Math.asin  ;\n")
+	(asm "atan  = Math.atan  ;\n")
+	(asm "cos   = Math.cos   ;\n")
+	(asm "sin   = Math.sin   ;\n")
+	(asm "tan   = Math.tan   ;\n")
+	(asm "exp   = Math.exp   ;\n")
+	(asm "log   = Math.log   ;\n")
+	(asm "sqrt  = Math.sqrt  ;\n")
+	(asm "ceil  = Math.ceil  ;\n")
+	(asm "floor = Math.floor ;\n")
+	(asm "fabs  = Math.abs   ;\n")
+	(asm "fmin  = Math.min   ;\n")
+	(asm "fmax  = Math.max   ;\n")
+	(asm "atan2 = Math.atan2 ;\n")
+	(asm "pow   = Math.pow   ;\n")
+	(asm "abs   = Math.abs   ;\n")
+	(asm "round = Math.round ;\n")
+	(asm "random= Math.random;\n")
+	(asm "INFINITY = Infinity;\n")
+	(asm "// @ts-ignore\n")
+	(asm "sinh  = Math.sinh ;\n")
+	(asm "// @ts-ignore\n")
+	(asm "cosh  = Math.cosh ;\n")
+	(asm "// @ts-ignore\n")
+	(asm "tanh  = Math.tanh ;\n")
+)
+
 
 (@if TARGET_PY 1
 	(asm "from math import *\n")
@@ -104,7 +176,6 @@
 	(asm "public static float INFINITY = Single.PositiveInfinity;\n")
 	(asm "public static Random w_RNG = new Random();\n")
 	(asm "public static float random(){ return (float)w_RNG.NextDouble(); }\n")
-
 )
 
 
@@ -135,11 +206,47 @@
 	(asm "static func abs  (x:Int)          ->Int  {return Swift.abs   (x);  }\n")
 )
 
+
 (@if TARGET_LUA 1
 	(asm "do for k,v in pairs(math) do _G[k]=v end end\n")
-	(asm "function round(x) return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5) end\n")
+	(asm "function round(x) return x>=0 and floor(x+0.5) or ceil(x-0.5) end\n")
 	(asm "local INFINITY = huge\n")
 	(asm "local fmax = max\n")
 	(asm "local fmin = min\n")
 	(asm "local fabs = abs\n\n")
+)
+
+(@if TARGET_MOON 1
+	(asm "do\n  for k,v in pairs(math) do\n  _G[k]=v\n")
+	(asm "round = (x) ->\n  return x>=0 and floor(x+0.5) or ceil(x-0.5)\n")
+	(asm "INFINITY = huge\n")
+	(asm "fmax = max\n")
+	(asm "fmin = min\n")
+	(asm "fabs = abs\n\n")
+)
+
+(@if TARGET_RUBY 1
+	(asm "def atan2(x,y) return Math.atan2(x,y) end\n")
+    (asm "def sinh(x)    return Math.sinh(x)    end\n")
+	(asm "def cosh(x)    return Math.cosh(x)    end\n")
+	(asm "def tanh(x)    return Math.tanh(x)    end\n")
+	(asm "def acos(x)    return Math.acos(x)    end\n")
+	(asm "def asin(x)    return Math.asin(x)    end\n")
+	(asm "def atan(x)    return Math.atan(x)    end\n")
+	(asm "def cos(x)     return Math.cos(x)     end\n")
+	(asm "def sin(x)     return Math.sin(x)     end\n")
+	(asm "def tan(x)     return Math.tan(x)    	end\n")
+	(asm "def exp(x)     return Math.exp(x)     end\n")
+	(asm "def log(x)     return Math.log(x)    	end\n")
+	(asm "def sqrt(x)    return Math.sqrt(x)    end\n")
+	(asm "def pow(x,y)   return x.pow(y)        end\n")
+	(asm "def ceil(x)    return x.ceil()        end\n")
+	(asm "def floor(x)   return x.floor()      	end\n")
+	(asm "def fabs(x)    return x.abs()  		end\n")
+	(asm "def abs(x)     return x.abs()         end\n")
+	(asm "def round(x)   return x.round()       end\n")
+	(asm "def fmin(x,y)  return x < y ? x : y   end\n")
+	(asm "def fmax(x,y)  return x > y ? x : y   end\n")
+	(asm "def random()   return rand()          end\n")
+	(asm "INFINITY = 1 / 0.0\n")
 )

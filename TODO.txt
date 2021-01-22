@@ -1,0 +1,37 @@
+[ ] Continue doing transpilers...
+[ ] Ruby transpiler: Fix "dynamic constant assignment error"
+[ ] Edit site to support all transpilers...
+[ ] Fix Kotlin transpiler
+[ ] Provide better way of using and including libraries (Via C source or via files...)
+[ ] Provide tools and clean wax final code after updates if found...
+[?] Maybe also fork this as ice programming language and extend it for later releases?
+
+#####################################################
+TRANSPILERS ADDED TO WAX
+#####################################################
+
+[x] JavaScript
+[x] CoffeeScript
+[x] Kotlin
+[x] MoonScript (Based on CoffeeScript one, With modifications from Lua one)
+[x] Ruby
+[ ] Wren
+[ ] Perl
+[ ] Dart
+[ ] Rust
+[ ] Haxe
+[?] Nelua
+[ ] PHP
+[?] ChaiScript
+[ ] Boo (C# + Python)
+[ ] Dlang
+[ ] Golang
+[ ] Objective-C
+[ ] Nim
+[ ] Vlang
+[?] BASIC
+[?] Terra
+[?] OCaml
+[?] Scheme
+
+> NOTE: Not all transpilers might be in development and some of them might be cancelled...

@@ -46,8 +46,12 @@
 <script src="https://codemirror.net/mode/python/python.js"></script>
 <script src="https://codemirror.net/mode/swift/swift.js"></script>
 <script src="https://codemirror.net/mode/lua/lua.js"></script>
+<script src="http://codemirror.net/addon/lint/lint.js"></script>
+<script src="http://codemirror.net/mode/coffeescript/coffeescript.js"></script>
+<script src="http://coffeescript.org/extras/coffee-script.js"></script>
+<script src="http://coffeelint.org/js/coffeelint.js"></script>
+<script src="http://codemirror.net/addon/lint/coffeescript-lint.js"></script>
 <script src="https://codemirror.net/mode/wast/wast.js"></script>
-
 <script src="https://unpkg.com/typescript@4.0.3/lib/typescriptServices.js"></script>
 
 <script src="waxc.js"></script>
@@ -105,6 +109,8 @@
         <option value="cpp">C++</option>
         <option value="java">Java</option>
         <option selected="selected" value="ts">TypeScript</option>
+		<option value="js">JavaScript</option>
+		<option value="coffee">CoffeeScript</option>
         <option value="py">Python</option>
         <option value="cs">C#</option>
         <option value="swift">Swift</option>
@@ -282,6 +288,8 @@ function main(){
       var targ = seltarg.value;
       var mode = ({
           "ts":"javascript",
+		  "js":"javascript",
+		  "coffee":"text/coffeescript",
           "c":"text/x-csrc",
           "cpp":"text/x-c++src",
           "java":"text/x-java",

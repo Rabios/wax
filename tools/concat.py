@@ -56,6 +56,9 @@ def min_cpp(src):
 def min_ts(src):
 	return src.replace("\n\n","\n");
 
+def min_js(src):
+    return src.replace("\n\n","\n");
+    
 def min_py(src):
 	return src.replace("\n\n","\n");
 

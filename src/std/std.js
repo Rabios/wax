@@ -1,0 +1,1 @@
+const w_slice=function(x, i, n) { x.slice(i,i+n); };

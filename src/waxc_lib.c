@@ -17,6 +17,11 @@ int WVERBOSE = 0;
 #include "to_swift.c"
 #include "to_lua.c"
 #include "to_wat.c"
+#include "to_js.c"
+#include "to_kotlin.c"
+#include "to_coffee.c"
+#include "to_moon.c"
+#include "to_ruby.c"
 
 
 char* transpile(char* targ, char* filname, char* src, int print_ast){
@@ -47,6 +52,16 @@ char* transpile(char* targ, char* filname, char* src, int print_ast){
     defs_addbool(&defs,"TARGET_LUA",0);
   }else if (!strcmp(targ,"wat")){
     defs_addbool(&defs,"TARGET_WAT",0);
+  }else if (!strcmp(targ,"js")) {
+	defs_addbool(&defs,"TARGET_JS",0);
+  }else if (!strcmp(targ,"coffee")) {
+	defs_addbool(&defs,"TARGET_COFFEE",0);
+  }else if (!strcmp(targ,"kt")) {
+	defs_addbool(&defs,"TARGET_KOTLIN",0);
+  }else if (!strcmp(targ,"moon")) {
+	defs_addbool(&defs,"TARGET_MOON",0);
+  }else if (!strcmp(targ,"rb")) {
+	defs_addbool(&defs,"TARGET_RUBY",0);
   }
 
   printinfo("[info] running preprocessor...\n");
@@ -92,6 +107,16 @@ char* transpile(char* targ, char* filname, char* src, int print_ast){
     out = tree_to_lua(modname,tree,&functable,&stttable,&included);
   }else if (!strcmp(targ,"wat")){
     out = tree_to_wat(modname,tree,&functable,&stttable,&included);
+  }else if (!strcmp(targ,"js")){
+    out = tree_to_js(modname,tree,&functable,&stttable,&included);
+  }else if (!strcmp(targ,"coffee")){
+    out = tree_to_coffee(modname,tree,&functable,&stttable,&included);
+  }else if (!strcmp(targ,"kt")){
+    out = tree_to_kotlin(modname,tree,&functable,&stttable,&included);
+  }else if (!strcmp(targ,"moon")){
+    out = tree_to_moon(modname,tree,&functable,&stttable,&included);
+  }else if (!strcmp(targ,"rb")){
+    out = tree_to_ruby(modname,tree,&functable,&stttable,&included);
   }
   char* cout = (char*)malloc(out.len+1);
   memcpy(cout, out.data, out.len);
