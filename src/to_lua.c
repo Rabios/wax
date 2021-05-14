@@ -234,7 +234,7 @@ str_t expr_to_lua(expr_t* expr, int indent){
     str_add(&out, "end");
 
   }else if (expr->key == EXPR_FUNC){
-    str_add(&out, "function ");
+    str_add(&out, "local function ");
     list_node_t* it = expr->children.head;
 
     str_t funcname = ((tok_t*)(CHILD1->term))->val;
@@ -340,7 +340,7 @@ str_t expr_to_lua(expr_t* expr, int indent){
       str_add(&out,expr_to_lua(CHILD1,-1).data);
     }
   }else if (expr->key == EXPR_STRUCT){
-    str_add(&out,"function struct__");
+    str_add(&out,"local function struct__");
     str_add(&out, ((tok_t*)(CHILD1->term))->val.data);
     str_add(&out,"()\n");
 
