@@ -35,28 +35,6 @@ str_t type_to_nelua(type_t* typ){
   return out;
 }
 
-str_t zero_to_nelua(type_t* typ){
-  str_t out = str_new();
-  if (typ->tag == TYP_INT){
-    str_add(&out,"0");
-  }else if (typ->tag == TYP_FLT){
-    str_add(&out,"0.0");
-  }else if (typ->tag == TYP_STT){
-    str_add(&out,"nil");
-  }else if (typ->tag == TYP_ARR){
-    str_add(&out,"nil");
-  }else if (typ->tag == TYP_VEC){
-    str_add(&out,"nil");
-  }else if (typ->tag == TYP_MAP){
-    str_add(&out,"nil");
-  }else if (typ->tag == TYP_STR){
-    str_add(&out,"nil");
-  }else{
-    str_add(&out,"--[[zero?]]");
-  }
-  return out;
-}
-
 str_t expr_to_nelua(expr_t* expr, int indent){
   // print_syntax_tree(expr,4);
   // printf("-----\n");
@@ -68,10 +46,8 @@ str_t expr_to_nelua(expr_t* expr, int indent){
     str_add(&out, ((tok_t*)(CHILD1->term))->val.data);
     str_add(&out,": ");
     str_add(&out,type_to_nelua((type_t*)(CHILD2->term)).data);
-    str_add(&out," = ");
-    str_add(&out,zero_to_nelua((type_t*)(CHILD2->term)).data);
-    
   }else if (expr->key == EXPR_SET){
+    type_t* typ = (type_t*)(CHILD1->term);
     str_add(&out, expr_to_nelua(CHILD1,-1).data);
     str_add(&out," = ");
     str_add(&out, expr_to_nelua(CHILD2,-1).data );
@@ -426,8 +402,9 @@ str_t expr_to_nelua(expr_t* expr, int indent){
     type_t* typ = (type_t*)(CHILD1->term);
 
     if (typ->tag == TYP_STT){
+      str_add(&out, "(@");
       str_add(&out,typ->name.data);
-
+      str_add(&out, ")()");
     }else if (typ->tag == TYP_ARR){
       if (expr->children.len == 1){
         str_add(&out,"({})");
@@ -485,8 +462,22 @@ str_t expr_to_nelua(expr_t* expr, int indent){
       }
     }
   }else if (expr->key == EXPR_FREE){
-    str_add(&out, expr_to_nelua(CHILD1,-1).data);
-    str_add(&out,"=nil--(GC)");
+    type_t* typ = CHILD1->type;
+
+    if (typ->tag == TYP_STT){
+    
+    }else if (typ->tag == TYP_ARR){
+    
+    }else if (typ->tag == TYP_MAP){
+      str_add(&out, expr_to_nelua(CHILD1,-1).data);
+      str_add(&out,":clear() --(GC)");
+    }else if (typ->tag == TYP_VEC){
+      str_add(&out, expr_to_nelua(CHILD1,-1).data);
+      str_add(&out,":clear() --(GC)");
+    }else{ 
+      str_add(&out, expr_to_nelua(CHILD1,-1).data);
+      str_add(&out,"=nil --(GC)");
+    }
 
   }else if (expr->key == EXPR_STRUCTGET){
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
@@ -527,9 +518,9 @@ str_t expr_to_nelua(expr_t* expr, int indent){
 
   }else if (expr->key == EXPR_ARRINS){
 
-    str_add(&out,"((");
+    str_add(&out,"(");
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
-    str_add(&out,"):insert(");
+    str_add(&out,"):insert((");
     str_add(&out,expr_to_nelua(CHILD2,-1).data);
     str_add(&out,"),(");
     str_add(&out,expr_to_nelua(CHILD3,-1).data);
@@ -568,8 +559,6 @@ str_t expr_to_nelua(expr_t* expr, int indent){
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
     str_add(&out,"):get(");
     str_add(&out,expr_to_nelua(CHILD2,-1).data);
-    str_add(&out,") or (");
-    str_add(&out,zero_to_nelua(CHILD1->type->elem1).data);
     str_add(&out,")");
 
   }else if (expr->key == EXPR_MAPREM){
@@ -605,9 +594,9 @@ str_t expr_to_nelua(expr_t* expr, int indent){
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
     str_add(&out,"=");
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
-    str_add(&out,"..string.char");
+    str_add(&out,"..string.char(");
     str_add(&out,expr_to_nelua(CHILD2,-1).data);
-    str_add(&out,"");
+    str_add(&out,")");
 
   }else if (expr->key == EXPR_STRCAT){
 
@@ -676,6 +665,7 @@ str_t tree_to_nelua(str_t modname, expr_t* tree, map_t* functable, map_t* stttab
   str_add(&out,"require \"string\"\n");
   str_add(&out,"require \"vector\"\n");
   str_add(&out,"require \"hashmap\"\n");
+  str_add(&out,"require \"memory\"\n\n");
   str_add(&out,"require \"vector\"\n\n");
   str_addconst(&out,TEXT_std_nelua);
   str_add(&out,"------ WAX Standard Library END   ------\n\n");
