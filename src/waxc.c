@@ -18,6 +18,7 @@ int WVERBOSE = 1;
 #include "to_cpp.c"
 #include "to_swift.c"
 #include "to_lua.c"
+#include "to_nelua.c"
 #include "to_moon.c"
 #include "to_ruby.c"
 #include "to_wat.c"
@@ -37,6 +38,7 @@ int WVERBOSE = 1;
 #define TARG_KOTLIN	13
 #define TARG_MOON   14
 #define TARG_RUBY   15
+#define TARG_NELUA  16
 
 void print_help(){
   printf(" _____                                                \n");
@@ -57,6 +59,7 @@ void print_help(){
   printf("--cpp      path/out.cpp     transpile to c++          \n");
   printf("--swift    path/out.swift   transpile to swift        \n");
   printf("--lua      path/out.lua     transpile to lua          \n");
+  printf("--nelua    path/out.nelua   transpile to nelua        \n");
   printf("--moon     path/out.moon    transpile to moonscript   \n");
   printf("--rb       path/out.rb      transpile to ruby         \n");
   printf("--wat      path/out.wat     transpile to webassembly  \n");
@@ -92,6 +95,8 @@ void transpile(int targ, char* input_file, char* path, int print_tok, int print_
     defs_addbool(&defs,"TARGET_CPP",0);
   }else if (targ == TARG_SWIFT){
     defs_addbool(&defs,"TARGET_SWIFT",0);
+  }else if (targ == TARG_NELUA){
+    defs_addbool(&defs,"TARGET_NELUA",0);
   }else if (targ == TARG_LUA){
     defs_addbool(&defs,"TARGET_LUA",0);
   }else if (targ == TARG_WAT){
@@ -148,6 +153,8 @@ void transpile(int targ, char* input_file, char* path, int print_tok, int print_
     out = tree_to_cpp(modname,tree,&functable,&stttable);
   }else if (targ == TARG_SWIFT){
     out = tree_to_swift(modname,tree,&functable,&stttable,&included);
+  }else if (targ == TARG_NELUA){
+    out = tree_to_nelua(modname,tree,&functable,&stttable,&included);
   }else if (targ == TARG_LUA){
     out = tree_to_lua(modname,tree,&functable,&stttable,&included);
   }else if (targ == TARG_WAT){
@@ -181,6 +188,7 @@ int main(int argc, char** argv){
   char* path_cs = 0;
   char* path_cpp = 0;
   char* path_swift = 0;
+  char* path_nelua = 0;
   char* path_lua = 0;
   char* path_moon = 0;
   char* path_ruby = 0;
@@ -224,6 +232,9 @@ int main(int argc, char** argv){
       i+=2;
     }else if (!strcmp(argv[i],"--swift")){
       path_swift = argv[i+1];
+      i+=2;
+    }else if (!strcmp(argv[i],"--nelua")){
+      path_nelua = argv[i+1];
       i+=2;
     }else if (!strcmp(argv[i],"--lua")){
       path_lua = argv[i+1];
@@ -324,6 +335,11 @@ int main(int argc, char** argv){
   if (path_lua){
     printinfo("[info] transpiling '%s' to Lua...\n",input_file);
     transpile(TARG_LUA, input_file, path_lua, print_tok, print_ast);
+  }
+  
+  if (path_nelua){
+    printinfo("[info] transpiling '%s' to Nelua...\n",input_file);
+    transpile(TARG_NELUA, input_file, path_nelua, print_tok, print_ast);
   }
   
   if (path_moon){

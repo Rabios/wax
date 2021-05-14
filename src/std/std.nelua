@@ -1,0 +1,25 @@
+local function w_arr_slice(x: auto, i: integer, n: integer): #[x.type]#
+  ## assert(x.type.is_vector)
+  local y: #[x.type]#
+  y:resize(n)
+  for j=i,i+n-1 do
+    y[j-i]=x[j]
+  end
+  return y
+end
+
+local function w_arr_remove(x: auto, i: integer, n: integer)
+  for j=(i+n),(i),-1 do
+    x:remove(j)
+  end
+end
+
+--[[
+local function w_strcpy(x: string, i: integer, n: integer): string
+  return string.sub(x,i,i+n)
+end
+]]
+
+--local function w_arr_slice(x: auto, i: integer, n: integer): #[x.type]#\n  ## assert(x.type.is_vector)\n  local y: #[x.type]#\n  y:resize(n)\n  for j=i,i+n-1 do\n    y[j-i]=x[j]\n  end\n  return y\nend\n\n
+--local function w_arr_remove(x: auto, i: integer, n: integer)\n  for j=(i+n),(i),-1 do\n    x:remove(j)\n  end\nend\n\n
+--local function w_strcpy(x: string, i: integer, n: integer): string\n  return string.sub(x,i,i+n)\nend\n

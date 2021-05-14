@@ -16,6 +16,7 @@ int WVERBOSE = 0;
 #include "to_cpp.c"
 #include "to_swift.c"
 #include "to_lua.c"
+#include "to_nelua.c"
 #include "to_wat.c"
 #include "to_js.c"
 #include "to_kotlin.c"
@@ -50,6 +51,8 @@ char* transpile(char* targ, char* filname, char* src, int print_ast){
     defs_addbool(&defs,"TARGET_SWIFT",0);
   }else if (!strcmp(targ,"lua")){
     defs_addbool(&defs,"TARGET_LUA",0);
+  }else if (!strcmp(targ,"nelua")) {
+    defs_addbool(&defs,"TARGET_NELUA",0);
   }else if (!strcmp(targ,"wat")){
     defs_addbool(&defs,"TARGET_WAT",0);
   }else if (!strcmp(targ,"js")) {
@@ -105,6 +108,8 @@ char* transpile(char* targ, char* filname, char* src, int print_ast){
     out = tree_to_swift(modname,tree,&functable,&stttable,&included);
   }else if (!strcmp(targ,"lua")){
     out = tree_to_lua(modname,tree,&functable,&stttable,&included);
+  }else if (!strcmp(targ,"nelua")){
+    out = tree_to_nelua(modname,tree,&functable,&stttable,&included);
   }else if (!strcmp(targ,"wat")){
     out = tree_to_wat(modname,tree,&functable,&stttable,&included);
   }else if (!strcmp(targ,"js")){
