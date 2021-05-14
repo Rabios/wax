@@ -333,11 +333,11 @@ str_t expr_to_nelua(expr_t* expr, int indent){
       str_add(&out, expr_to_nelua(CHILD1,-1).data);
       str_add(&out, "))");
     }else if (typl->tag == TYP_STR && typr->tag == TYP_INT){
-      str_add(&out, "((@integer)tonumber(");
+      str_add(&out, "(tonumber(");
       str_add(&out, expr_to_nelua(CHILD1,-1).data);
       str_add(&out, "))");
     }else if (typl->tag == TYP_STR && typr->tag == TYP_FLT){
-      str_add(&out, "((@float32)tonumber(");
+      str_add(&out, "(tonumber(");
       str_add(&out, expr_to_nelua(CHILD1,-1).data);
       str_add(&out, "))");
     }else{
@@ -465,16 +465,21 @@ str_t expr_to_nelua(expr_t* expr, int indent){
     type_t* typ = CHILD1->type;
 
     if (typ->tag == TYP_STT){
-    
+      str_add(&out, expr_to_nelua(CHILD1,-1).data);
+      str_add(&out,"={} --(GC)");
     }else if (typ->tag == TYP_ARR){
-    
+      str_add(&out, expr_to_nelua(CHILD1,-1).data);
+      str_add(&out,":clear() --(GC)");
     }else if (typ->tag == TYP_MAP){
       str_add(&out, expr_to_nelua(CHILD1,-1).data);
       str_add(&out,":clear() --(GC)");
     }else if (typ->tag == TYP_VEC){
       str_add(&out, expr_to_nelua(CHILD1,-1).data);
       str_add(&out,":clear() --(GC)");
-    }else{ 
+    }else if (typ->tag == TYP_STR) {
+      str_add(&out, expr_to_nelua(CHILD1,-1).data);
+      str_add(&out,":destroy() --(GC)");
+    } else {
       str_add(&out, expr_to_nelua(CHILD1,-1).data);
       str_add(&out,"=nil --(GC)");
     }
@@ -517,10 +522,8 @@ str_t expr_to_nelua(expr_t* expr, int indent){
     str_add(&out,expr_to_nelua(CHILD3,-1).data);
 
   }else if (expr->key == EXPR_ARRINS){
-
-    str_add(&out,"(");
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
-    str_add(&out,"):insert((");
+    str_add(&out,":insert((");
     str_add(&out,expr_to_nelua(CHILD2,-1).data);
     str_add(&out,"),(");
     str_add(&out,expr_to_nelua(CHILD3,-1).data);
@@ -555,25 +558,22 @@ str_t expr_to_nelua(expr_t* expr, int indent){
     str_add(&out,"))");
 
   }else if (expr->key == EXPR_MAPGET){
-    str_add(&out,"(");
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
-    str_add(&out,"):get(");
+    str_add(&out,":get(");
     str_add(&out,expr_to_nelua(CHILD2,-1).data);
     str_add(&out,")");
 
   }else if (expr->key == EXPR_MAPREM){
-    str_add(&out,"((");
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
-    str_add(&out,"):remove(");
+    str_add(&out,":remove(");
     str_add(&out,expr_to_nelua(CHILD2,-1).data);
-    str_add(&out,"))");
+    str_add(&out,")");
 
   }else if (expr->key == EXPR_MAPSET){
-    str_add(&out,"(");
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
-    str_add(&out,"):set(");
+    str_add(&out,"[");
     str_add(&out,expr_to_nelua(CHILD2,-1).data);
-    str_add(&out,",");
+    str_add(&out,"] = (");
     str_add(&out,expr_to_nelua(CHILD3,-1).data);
     str_add(&out,")");
 
@@ -590,7 +590,6 @@ str_t expr_to_nelua(expr_t* expr, int indent){
     str_add(&out,"))");
 
   }else if (expr->key == EXPR_STRADD){
-
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
     str_add(&out,"=");
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
@@ -599,19 +598,18 @@ str_t expr_to_nelua(expr_t* expr, int indent){
     str_add(&out,")");
 
   }else if (expr->key == EXPR_STRCAT){
-
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
     str_add(&out,"=");
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
     str_add(&out,"..");
     str_add(&out,expr_to_nelua(CHILD2,-1).data);
-    str_add(&out,"");
 
   }else if (expr->key == EXPR_STRCPY){
     str_add(&out,"string.sub(");
     str_add(&out,expr_to_nelua(CHILD1,-1).data);
     str_add(&out,",");
     str_add(&out,expr_to_nelua(CHILD2,-1).data);
+    str_add(&out,"+1");
     str_add(&out,",");
     str_add(&out,expr_to_nelua(CHILD2,-1).data);
     str_add(&out,"+");
@@ -665,7 +663,7 @@ str_t tree_to_nelua(str_t modname, expr_t* tree, map_t* functable, map_t* stttab
   str_add(&out,"require \"string\"\n");
   str_add(&out,"require \"vector\"\n");
   str_add(&out,"require \"hashmap\"\n");
-  str_add(&out,"require \"memory\"\n\n");
+  str_add(&out,"require \"memory\"\n");
   str_add(&out,"require \"vector\"\n\n");
   str_addconst(&out,TEXT_std_nelua);
   str_add(&out,"------ WAX Standard Library END   ------\n\n");

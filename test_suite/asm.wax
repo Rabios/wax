@@ -1,0 +1,3 @@
+(func main (result int)
+  (asm "return 0")
+)

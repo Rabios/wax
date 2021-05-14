@@ -1,0 +1,12 @@
+(func main (result int)
+  (let c str (alloc str "Va"))
+  (<< c "nisa!")
+  (print c)
+  (print (# c))
+  
+  (let s str "hello")
+  (set s (slice s 1 3))  ;; "ell"
+  (print s)
+  
+  (return 0)
+)

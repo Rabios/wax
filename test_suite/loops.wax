@@ -1,0 +1,27 @@
+(func main(result int)
+  (for i 0 (< i 100) 1 (do
+    (print "i is:")
+    (print i)
+  ))
+  
+  (let i int 0)
+  
+  (while (< i 10) (do
+    (print i)
+    (set i (+ i 1))
+  ))
+  
+  (let m (map str int) (alloc (map str int)))
+  
+  (insert m "xyz" 123)
+  (insert m "abc" 456)
+
+  (for k v m (do
+    (print "key is")
+    (print k)
+    (print "val is")
+    (print v)
+  )) 
+  
+  (return 0)
+)

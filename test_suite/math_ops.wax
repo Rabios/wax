@@ -1,0 +1,6 @@
+(@include math)
+
+(func main(result int)
+  (print (call fabs -5.5))
+  (return 0)
+)

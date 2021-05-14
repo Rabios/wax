@@ -1,0 +1,17 @@
+(func main(result int)
+  (let a int 6)
+  (let b float 5.3)
+  (let c str (alloc str "string")) 
+  (let float_arr (arr float) (alloc (arr float) 1.0 2.0 3.0))
+  (let s str (alloc str "hello"))
+  
+  (print (<< s " world"))
+  (print a)
+  (print b)
+  (print c)
+  (print (get float_arr 0))
+  (print (get float_arr 1))
+  (print (get float_arr 2))
+  
+  (return 0)
+)

@@ -1,0 +1,9 @@
+(func main(result int)
+  (let x float (cast "5.5" float))
+  
+  (print x)
+  (print (cast x str))
+  (print (cast x int))
+  
+  (return 0)
+)

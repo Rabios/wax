@@ -1,0 +1,12 @@
+(func abs(param x float) (result float)
+  (if (< x 0) (then
+    (return (- x (* x 2)))
+  ) (else
+    (return x)
+  ))
+)
+
+(func main(result int)
+  (print (call abs -5))
+  (return 0)
+)

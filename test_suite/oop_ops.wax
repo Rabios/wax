@@ -1,0 +1,66 @@
+(struct vec3
+  (let x float)
+  (let y float)
+  (let z float)
+)
+  
+(struct cube
+  (let position (struct vec3))
+  (let size (struct vec3))
+)
+
+(func main(result int)
+  (let x (arr float) (alloc (arr float) 1.0 2.0 3.0 4.0 5.0 6.0 7.0))
+  (let m (map str int) (alloc (map str int)))
+  (let p (struct vec3) (alloc (struct vec3)))
+  (let cb (struct cube) (alloc (struct cube)))
+  
+  (print (get x 0))
+  (print (get x 1))
+  (print (get x 2))
+  
+  (set x 1 10.0)
+  (remove x 1 5)
+  (insert x (# x) 15.0)
+  (set m "xyz" 123)
+  (insert m "abc" 456) ; exactly same as 'set'
+  (print (get m "xyz"))
+  (remove m "xyz")
+  (print (get m "xyz"))
+  
+  (set p x 1.0)
+  (set p y 2.0)
+  (set p z 3.0)
+  
+  (set cb position (alloc (struct vec3)))
+  (set cb size (alloc (struct vec3)))
+  
+  (set (get cb position) x 3.0)
+  (set (get cb position) y 2.5)
+  (set (get cb position) z 2.0)
+  
+  (set (get cb size) x 1.0)
+  (set (get cb size) y 1.0)
+  (set (get cb size) z 1.0)
+  
+  (print (get p x))
+  (print (get p y))
+  (print (get p z))
+  
+  (print (get (get cb position) x))
+  (print (get (get cb position) y))
+  (print (get (get cb position) z))
+  
+  (print (get (get cb size) x))
+  (print (get (get cb size) y))
+  (print (get (get cb size) z))
+  
+  (free (get cb position))
+  (free (get cb size))
+  (free cb)
+  (free p)
+  (free x)
+  (free m)
+  
+  (return 0)
+)

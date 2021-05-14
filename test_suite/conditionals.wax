@@ -1,0 +1,14 @@
+(func main(result int)
+  (let a int 6)
+  (let b int 5)
+  
+  (if (> a b) (then 
+    (print "IF WORKS!")
+  ) (else (if (< a b) (then
+    (print "ELSE IF WORKS!")
+  ) (else
+    (print "ELSE WORKS!")
+  ))))
+  
+  (return 0)
+)
