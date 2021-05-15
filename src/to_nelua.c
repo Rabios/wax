@@ -149,7 +149,7 @@ str_t expr_to_nelua(expr_t* expr, int indent){
   }else if (expr->key == EXPR_IDIV){
     str_add(&out, "((");
     str_add(&out, expr_to_nelua(CHILD1,-1).data );
-    str_add(&out, ") // (");
+    str_add(&out, ") /// (");
     str_add(&out, expr_to_nelua(CHILD2,-1).data );
     str_add(&out, "))");
 

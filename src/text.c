@@ -4,7 +4,7 @@ const char* TEXT_std_cs = "public static V w_mapGet<K,V>(Dictionary<K,V> map, K 
 "public static bool w_BOOL(int x){return x!=0;}\n"
 "public static int w_INT(bool x){return x?1:0;}\n"
 "public static int w_NOT(int x){return (x==0)?1:0;}\n";
-const char* TEXT_std_nelua = "local function w_arr_slice(x: auto, i: integer, n: integer): #[x.type]#\n  ## assert(x.type.is_vector)\n  local y: #[x.type]#\n  y:resize(n)\n  for j=i+1,i+n-1 do\n    y[j-i]=x[j]\n  end\n  return y\nend\n\nlocal function w_arr_remove(x: auto, i: integer, n: integer)\n  for j=(i+n),(i+1),-1 do\n    x:remove(j)\n  end\nend\n\nlocal function w_trunc(x: number)\n  if x < 0 then\n    return math.ceil(x)\n  else\n    return math.floor(x)\n  end\nend\n\n";
+const char* TEXT_std_nelua = "local function w_arr_slice(x: auto, i: integer, n: integer): #[x.type]#\n  ## assert(x.type.is_vector)\n  local y: #[x.type]#\n  y:resize(n)\n  for j=i+1,i+n-1 do\n    y[j-i]=x[j]\n  end\n  return y\nend\n\nlocal function w_arr_remove(x: auto, i: integer, n: integer)\n  for j=(i+n),(i+1),-1 do\n    x:remove(j)\n  end\nend\n\n";
 const char* TEXT_std_lua = "function w_trunc(x)         if x < 0 then return math.ceil(x) else return math.floor(x) end end\n"
 "function w_vec_init(z,n)    local x = {} for i=1,n do x[i]=z end return x end\n"
 "function w_arr_slice(x,i,n) local y = {} for j=(i+1),(i+n) do y[j-i]=x[j] end return y end\n"
