@@ -14,16 +14,25 @@
   (let m (map str int) (alloc (map str int)))
   (let p (struct vec3) (alloc (struct vec3)))
   (let cb (struct cube) (alloc (struct cube)))
+  (let vf (vec 3 float) (alloc (vec 3 float)))
+  
+  (set vf 0 10.0)
+  (set vf 1 20.0)
+  (set vf 2 30.0)
   
   (print (get x 0))
   (print (get x 1))
   (print (get x 2))
   
+  (print (get vf 0))
+  (print (get vf 1))
+  (print (get vf 2))
+  
   (set x 1 10.0)
   (remove x 1 5)
   (insert x (# x) 15.0)
   (set m "xyz" 123)
-  (insert m "abc" 456) ; exactly same as 'set'
+  (insert m "abc" 456)
   (print (get m "xyz"))
   (remove m "xyz")
   (print (get m "xyz"))
@@ -61,6 +70,7 @@
   (free p)
   (free x)
   (free m)
+  (free vf)
   
   (return 0)
 )

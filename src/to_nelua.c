@@ -18,11 +18,13 @@ str_t type_to_nelua(type_t* typ){
     str_add(&out,type_to_nelua(typ->elem0).data);
     str_add(&out,")");
   }else if (typ->tag == TYP_VEC){
+    char s[32];
+    sprintf(&s,"%d",typ->size);
     str_add(&out,"array(");
     str_add(&out,type_to_nelua(typ->elem0).data);
     str_add(&out,",");
-    str_add(&out,typ->size);
-    str_add(&out,")");
+    str_add(&out, s);
+    str_add(&out, ")");
   }else if (typ->tag == TYP_MAP){
     str_add(&out,"hashmap(");
     str_add(&out,type_to_nelua(typ->elem0).data);
@@ -427,14 +429,17 @@ str_t expr_to_nelua(expr_t* expr, int indent){
     }else if (typ->tag == TYP_VEC){
 
       if (expr->children.len == 1){
-        char s[32];
-        
-        str_add(&out,"array(");
-        str_add(&out,type_to_nelua(typ->elem0).data);
-        str_add(&out,",");
-        //str_add(&out,zero_to_nelua(typ->elem0).data);
-        str_add(&out,s);
-        str_add(&out,")");
+        //char s[32];
+        //sprintf(s,"%d",typ->size);
+        //str_add(&out,"array(");
+        //str_add(&out,type_to_nelua(typ->elem0).data);
+        //str_add(&out,",");
+        //str_add(&out,s);
+        //str_add(&out,")");
+       
+        str_add(&out,"{");
+        str_add(&out,"}");
+        //str_add(&out,")");
         
         
       }else{
@@ -473,15 +478,14 @@ str_t expr_to_nelua(expr_t* expr, int indent){
     }else if (typ->tag == TYP_MAP){
       str_add(&out, expr_to_nelua(CHILD1,-1).data);
       str_add(&out,":clear() --(GC)");
-    }else if (typ->tag == TYP_VEC){
-      str_add(&out, expr_to_nelua(CHILD1,-1).data);
-      str_add(&out,":clear() --(GC)");
     }else if (typ->tag == TYP_STR) {
       str_add(&out, expr_to_nelua(CHILD1,-1).data);
       str_add(&out,":destroy() --(GC)");
     } else {
-      str_add(&out, expr_to_nelua(CHILD1,-1).data);
-      str_add(&out,"=nil --(GC)");
+      if (!(typ->tag == TYP_VEC)) {
+        str_add(&out, expr_to_nelua(CHILD1,-1).data);
+        str_add(&out,"=nil --(GC)");
+      }
     }
 
   }else if (expr->key == EXPR_STRUCTGET){
